@@ -1,0 +1,89 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-input/paper-input-behavior.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-material/paper-material.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icons/editor-icons.html">
+<link rel="import" href="../ct-shared-styles/ct-application-theme.html">
+
+
+<!--
+`ct-view-dormant-meters`
+View the dormant meters template
+
+@demo demo/index.html
+-->
+
+<dom-module id="ct-view-dormant-meters">
+  <template>
+    <style is="custom-style" include="custom-style shared-styles">
+    :host {
+      --iron-icon: {
+        margin: 6px;
+        font-size: 16px;
+        opacity: 0.5;
+      };
+      --paper-button: {
+        margin:6px;
+      }
+    }
+      textarea {
+        padding: 0 10px;
+      }
+      .hover-full-opacity:hover{
+        opacity: 1;
+        cursor:pointer;
+      }
+    </style>
+    
+    <div class="container main-content">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="pull-right">
+            <iron-icon  class="hover-full-opacity" icon="editor:mode-edit"></iron-icon>
+          </div>
+            <paper-input class="custom-frame" label="Dormant Meter Threshold" placeholder="30 Days" type="text" name="" value="" auto-validate pattern="[a-zA-Z 0-9]*" error-message="Require letters and numbers"></paper-input>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="pull-right">
+            <iron-icon class="hover-full-opacity" icon="editor:mode-edit"></iron-icon>
+          </div>
+          <paper-input-container always-float-label>
+            <label>Dormant Meter Email Template</label>
+            <textarea class="ct-textarea" name="name" rows="8" cols="80" label="Dormant Meter Template"></textarea>
+          </paper-input-container>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="pull-right">
+            <iron-icon class="hover-full-opacity" icon="editor:mode-edit"></iron-icon>
+          </div>
+          <paper-input-container always-float-label>
+            <label>Dormant Meter SMS Template</label>
+            <textarea class="ct-textarea" label="Textarea label" rows="8" cols="80"></textarea>
+          </paper-input-container>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <paper-button class="primary pull-right">Save Changes</paper-button>
+        </div>
+      </div>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'ct-view-dormant-meters',
+      properties: {
+        prop1: {
+          type: String,
+          value: 'ct-view-dormant-meters',
+        },
+      },
+    });
+  </script>
+</dom-module>
