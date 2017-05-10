@@ -1,7 +1,7 @@
 {
-  "name": "ct-view-dormant-meters",
+  "name": "ct-view-settings-dormant-meters",
   "description": "View the dormant meters template",
-  "main": "ct-view-dormant-meters.html",
+  "main": "ct-view-settings-dormant-meters.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
     "iron-flex-layout":"PolymerElements/iron-flex-layout#^1.3.2",

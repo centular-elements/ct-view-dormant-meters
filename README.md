@@ -1,4 +1,4 @@
-# \<ct-view-dormant-meters\>
+# \<ct-view-settings-dormant-meters\>
 
 View the dormant meters template
 
