@@ -1,11 +1,16 @@
 <link rel="import" href="../polymer/polymer.html">
+
 <link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../paper-input/paper-textarea.html">
 <link rel="import" href="../paper-input/paper-input-behavior.html">
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../paper-material/paper-material.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-icons/editor-icons.html">
+
+<link rel="import" href="../ct-editable-switcher/ct-editable-switcher.html">
 <link rel="import" href="../ct-shared-styles/ct-application-theme.html">
 
 
@@ -18,17 +23,18 @@ View the dormant meters template
 
 <dom-module id="ct-view-settings-dormant-meters">
   <template>
-    <style is="custom-style" include="custom-style shared-styles">
-    :host {
-      --iron-icon: {
-        margin: 6px;
-        font-size: 16px;
-        opacity: 0.5;
-      };
-      --paper-button: {
-        margin:6px;
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style is="custom-style">
+      :host {
+        --iron-icon: {
+          margin: 6px;
+          font-size: 16px;
+          opacity: 0.5;
+        };
+        --paper-button: {
+          margin:6px;
+        }
       }
-    }
       textarea {
         padding: 0 10px;
       }
@@ -37,53 +43,110 @@ View the dormant meters template
         cursor:pointer;
       }
     </style>
-    
-    <div class="container main-content">
-      <div class="row">
-        <div class="col-xs-12">
-          <div class="pull-right">
-            <iron-icon  class="hover-full-opacity" icon="editor:mode-edit"></iron-icon>
-          </div>
-            <paper-input class="custom-frame" label="Dormant Meter Threshold" placeholder="30 Days" type="text" name="" value="" auto-validate pattern="[a-zA-Z 0-9]*" error-message="Require letters and numbers"></paper-input>
-        </div>
-      </div>
 
+    <div class="container-fluid token-input-container">
       <div class="row">
-        <div class="col-xs-12 col-sm-6">
-          <div class="pull-right">
-            <iron-icon class="hover-full-opacity" icon="editor:mode-edit"></iron-icon>
-          </div>
-          <paper-input-container always-float-label>
-            <label>Dormant Meter Email Template</label>
-            <textarea class="ct-textarea" name="name" rows="8" cols="80" label="Dormant Meter Template"></textarea>
-          </paper-input-container>
-        </div>
-        <div class="col-xs-12 col-sm-6">
-          <div class="pull-right">
-            <iron-icon class="hover-full-opacity" icon="editor:mode-edit"></iron-icon>
-          </div>
-          <paper-input-container always-float-label>
-            <label>Dormant Meter SMS Template</label>
-            <textarea class="ct-textarea" label="Textarea label" rows="8" cols="80"></textarea>
-          </paper-input-container>
+        <div class="col-sm-3 col-sm-offset-9">
+          <paper-button
+                  class$="btn btn-block [[_computeBtnStyle(_isStateEdit)]]" on-tap="_editBtnHandler">[[_computeButtonText(_isStateEdit)]]</paper-button>
         </div>
       </div>
       <div class="row">
-        <div class="col-xs-12">
-          <paper-button class="primary pull-right">Save Changes</paper-button>
+        <paper-toggle-button>Activate Dormant Meter Notification</paper-toggle-button>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <div><strong>Dormant Meter Threshold</strong></div>
+        </div>
+        <div class="col-sm-8">
+          <ct-editable-switcher edit-mode$="[[_isStateEdit]]">
+            <paper-input
+                    class="input-element"
+                    type="text"
+                    allowed-pattern="[0-9\.]"
+                    no-label
+                    required$="[[_isRequired]]"
+                    error-message="Please provide the number of days before dormant meter notification is sent"
+                    value="">
+              <div suffix> days</div>
+            </paper-input>
+          </ct-editable-switcher>
+          <small>Number of days a meter can be dormant before a notification is sent</small>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <div><strong>Dormant Meter Email Template</strong></div>
+        </div>
+        <div class="col-sm-8">
+          <ct-editable-switcher edit-mode$="[[_isStateEdit]]">
+            <paper-textarea class="input-element" no-label></paper-textarea>
+          </ct-editable-switcher>
+          <small>Insert <code>[&shy;[meter_num]&shy;]</code> into template to display the affected meter number</small>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <div><strong>Dormant Meter SMS Template</strong></div>
+        </div>
+        <div class="col-sm-8">
+          <ct-editable-switcher edit-mode$="[[_isStateEdit]]">
+            <paper-textarea class="input-element" no-label char-counter maxlength="160"></paper-textarea>
+          </ct-editable-switcher>
+          <small>Insert <code>[&shy;[meter_num]&shy;]</code> into template to display the affected meter number</small>
         </div>
       </div>
     </div>
+
   </template>
+
   <script>
-    Polymer({
-      is: 'ct-view-settings-dormant-meters',
-      properties: {
-        prop1: {
-          type: String,
-          value: 'ct-view-settings-dormant-meters',
-        },
-      },
-    });
+
+      Polymer({
+          is: 'ct-view-settings-dormant-meters',
+
+          properties: {
+              _isStateEdit : {
+                  type: Boolean,
+                  value: function() {
+                      return false;
+                  }
+              },
+
+              _dataObj: {
+                  type: Object,
+                  value: function() {
+                      return {
+                          freeTokens: 100,
+                          recurringTokens: 200
+                      }
+                  }
+              }
+          },
+
+          _computeReadOnly : function(status){
+              return (!status);
+          },
+
+          _computeButtonText: function(isEdit){
+              return (isEdit) ? 'Save Template' : 'Edit Template';
+          },
+
+          _computeBtnStyle : function(isEdit){
+              return (isEdit) ? "btn-primary" : "btn-default";
+          },
+
+          _toggleStatus : function(){
+              this._isStateEdit = !this._isStateEdit;
+          },
+
+          _editBtnHandler : function(){
+//            todo: event fired on edit/save
+//            todo: event to emit notification
+
+              this._toggleStatus();
+          },
+      });
+
   </script>
 </dom-module>
