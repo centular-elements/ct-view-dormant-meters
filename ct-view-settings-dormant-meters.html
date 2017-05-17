@@ -33,9 +33,7 @@ View the dormant meters template
           font-size: 16px;
           opacity: 0.5;
         };
-        --paper-button: {
-          margin:6px;
-        };
+
         --paper-input-container:{
           border-top: 1px solid #ccc;
           border-left: 1px solid #ccc;
@@ -54,16 +52,7 @@ View the dormant meters template
           margin-left: 10px;
         };
       }
-      .row-striped:nth-of-type(odd){
-        background-color: #efefef;
-      }
 
-      .row-striped:nth-of-type(even){
-        background-color: #ffffff;
-      }
-      textarea {
-        padding: 0 10px;
-      }
       .hover-full-opacity:hover{
         opacity: 1;
         cursor:pointer;
@@ -84,7 +73,7 @@ View the dormant meters template
       <div class="row">
         <div class="col-sm-3 col-sm-offset-9">
           <paper-button
-                  class$="btn btn-block [[_computeBtnStyle(_isStateEdit)]]" on-tap="_editBtnHandler">[[_computeButtonText(_isStateEdit)]]</paper-button>
+                  class$="btn btn-block [[_computeBtnStyle(_isStateEdit)]]" on-tap="_editBtnHandler" raised>[[_computeButtonText(_isStateEdit)]]</paper-button>
         </div>
       </div>
 
