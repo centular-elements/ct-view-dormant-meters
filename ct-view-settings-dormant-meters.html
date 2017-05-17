@@ -35,7 +35,31 @@ View the dormant meters template
         };
         --paper-button: {
           margin:6px;
-        }
+        };
+        --paper-input-container:{
+          border-top: 1px solid #ccc;
+          border-left: 1px solid #ccc;
+          border-right: 1px solid #ccc;
+          border-bottom: none;
+          padding: 0 !important;
+        };
+
+        --paper-input-container-input: {
+          text-overflow: ellipsis;
+          width: calc(100% - 20px);
+          margin-left: 10px;
+        };
+
+        --paper-input-container-label: {
+          margin-left: 10px;
+        };
+      }
+      .row-striped:nth-of-type(odd){
+        background-color: #efefef;
+      }
+
+      .row-striped:nth-of-type(even){
+        background-color: #ffffff;
       }
       textarea {
         padding: 0 10px;
@@ -43,6 +67,15 @@ View the dormant meters template
       .hover-full-opacity:hover{
         opacity: 1;
         cursor:pointer;
+      }
+      .row-easy {
+        padding: 10px 0;
+      }
+      .margin-10v {
+        margin: 10px 0;
+      }
+      .input-suffix {
+        margin-right: 10px;
       }
     </style>
 
@@ -56,26 +89,22 @@ View the dormant meters template
       </div>
 
       <form class="" is="iron-form">
-
         <div class="row">
           <div class="col-sm-4">
-            <div><strong>Dormant Meter Notification Status</strong></div>
+            <div><h4>Dormant Meter Notification Status</h4></div>
           </div>
           <div class="col-sm-8">
             <paper-toggle-button
-                    class="input-element"
+                    class="input-element margin-10v"
                     id="notificationToggle"
                     active="{{_isToggleActive}}"
                     disabled$="[[!_isStateEdit]]"
             > <span>Notifications are</span> <span>[[_computeToggleText(_isToggleActive)]]</span></paper-toggle-button>
-
           </div>
-
         </div>
-
-        <div class="row">
+        <div class="row row-easy">
           <div class="col-sm-4">
-            <div><strong>Dormant Meter Threshold</strong></div>
+            <div><h4>Dormant Meter Threshold</h4></div>
           </div>
           <div class="col-sm-8">
             <ct-editable-switcher edit-mode$="[[_isStateEdit]]">
@@ -83,24 +112,24 @@ View the dormant meters template
                       class="input-element"
                       type="text"
                       allowed-pattern="[0-9\.]"
-                      no-label
+                      label="Insert Number of days"
                       required$="[[_isToggleActive]]" auto-validate
                       error-message="Please provide the number of days before dormant meter notification is sent"
                       value="">
-                <div suffix> days</div>
+                <div suffix class="input-suffix"> days</div>
               </paper-input>
             </ct-editable-switcher>
             <small>Number of days a meter can be dormant before a notification is sent</small>
           </div>
         </div>
 
-        <div class="row">
+        <div class="row row-easy">
           <div class="col-sm-4">
-            <div><strong>Dormant Meter Email Template</strong></div>
+            <div><h4>Dormant Meter Email Template</h4></div>
           </div>
           <div class="col-sm-8">
             <ct-editable-switcher edit-mode$="[[_isStateEdit]]">
-              <paper-textarea class="input-element" no-label required$="[[_isToggleActive]]" auto-validate error-message="Please enter message template" ></paper-textarea>
+              <paper-textarea class="input-element" label="Dormant Meter Email Template" required$="[[_isToggleActive]]" auto-validate error-message="Please enter message template" ></paper-textarea>
             </ct-editable-switcher>
             <small>Insert <code>[&shy;[meter_num]&shy;]</code> into template to display the affected meter number</small>
           </div>
@@ -108,18 +137,16 @@ View the dormant meters template
 
         <div class="row">
           <div class="col-sm-4">
-            <div><strong>Dormant Meter SMS Template</strong></div>
+            <div><h4>Dormant Meter SMS Template</h4></div>
           </div>
           <div class="col-sm-8">
             <ct-editable-switcher edit-mode$="[[_isStateEdit]]">
-              <paper-textarea class="input-element" no-label char-counter maxlength="160" required$="[[_isToggleActive]]" auto-validate error-message="Please enter message template" ></paper-textarea>
+              <paper-textarea class="input-element" label="Dormant Meter SMS Template" char-counter maxlength="160" required$="[[_isToggleActive]]" auto-validate error-message="Please enter message template" ></paper-textarea>
             </ct-editable-switcher>
             <small>Insert <code>[&shy;[meter_num]&shy;]</code> into template to display the affected meter number</small>
           </div>
         </div>
-
       </form>
-
     </div>
 
     <paper-dialog
