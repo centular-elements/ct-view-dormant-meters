@@ -12,7 +12,8 @@
 <link rel="import" href="../paper-dialog/paper-dialog.html">
 <link rel="import" href="../iron-form/iron-form.html">
 
-<link rel="import" href="../ct-editable-switcher/ct-editable-switcher.html">
+<link rel="import" href="../ct-input-element/ct-input-element.html">
+<link rel="import" href="../ct-setting-api/ct-setting-api.html">
 
 
 <!--
@@ -67,14 +68,9 @@ View the dormant meters template
       }
     </style>
 
-    <div class="container-fluid token-input-container">
+    <ct-setting-api id="settingApi"></ct-setting-api>
 
-      <div class="row">
-        <div class="col-sm-3 col-sm-offset-9">
-          <paper-button
-                  class$="btn btn-block [[_computeBtnStyle(_isStateEdit)]]" on-tap="_editBtnHandler" raised>[[_computeButtonText(_isStateEdit)]]</paper-button>
-        </div>
-      </div>
+    <div class="container-fluid token-input-container">
 
       <form class="" is="iron-form">
         <div class="row">
@@ -82,12 +78,16 @@ View the dormant meters template
             <div><h4>Dormant Meter Notification Status</h4></div>
           </div>
           <div class="col-sm-8">
-            <paper-toggle-button
-                    class="input-element margin-10v"
-                    id="notificationToggle"
-                    active="{{_isToggleActive}}"
-                    disabled$="[[!_isStateEdit]]"
-            > <span>Notifications are</span> <span>[[_computeToggleText(_isToggleActive)]]</span></paper-toggle-button>
+              <ct-input-element input-type='boolean'
+                                value=''
+                                label=''
+                                required
+                                note='Number of days a meter can be dormant before a notification is sent'
+                                error-message='Please provide the number of days before dormant meter notification is sent'
+                                ></ct-input-element>
+
+
+
           </div>
         </div>
         <div class="row row-easy">
@@ -95,19 +95,15 @@ View the dormant meters template
             <div><h4>Dormant Meter Threshold</h4></div>
           </div>
           <div class="col-sm-8">
-            <ct-editable-switcher edit-mode$="[[_isStateEdit]]">
-              <paper-input
-                      class="input-element"
-                      type="text"
-                      allowed-pattern="[0-9\.]"
-                      label="Insert Number of days"
-                      required$="[[_isToggleActive]]" auto-validate
-                      error-message="Please provide the number of days before dormant meter notification is sent"
-                      value="">
-                <div suffix class="input-suffix"> days</div>
-              </paper-input>
-            </ct-editable-switcher>
-            <small>Number of days a meter can be dormant before a notification is sent</small>
+              <ct-input-element input-type='text'
+                                value=''
+                                label=''
+                                required
+                                allowed-pattern="[0-9\.]"
+                                note='Number of days a meter can be dormant before a notification is sent'
+                                error-message='Please provide the number of days before dormant meter notification is sent'>
+                <div suffix class="input-suffix"> days</div></ct-input-element>
+
           </div>
         </div>
 
@@ -116,10 +112,13 @@ View the dormant meters template
             <div><h4>Dormant Meter Email Template</h4></div>
           </div>
           <div class="col-sm-8">
-            <ct-editable-switcher edit-mode$="[[_isStateEdit]]">
-              <paper-textarea class="input-element" label="Dormant Meter Email Template" required$="[[_isToggleActive]]" auto-validate error-message="Please enter message template" ></paper-textarea>
-            </ct-editable-switcher>
-            <small>Insert <code>[&shy;[meter_num]&shy;]</code> into template to display the affected meter number</small>
+            <ct-input-element input-type='textarea'
+                              value=''
+                              label=''
+                              required
+                              note="Insert <code>[&shy;[meter_num]&shy;]</code> into template to display the affected meter number"
+                              error-message='Please enter message template'
+                              char-counter maxlength="160"></ct-input-element>
           </div>
         </div>
 
@@ -128,26 +127,20 @@ View the dormant meters template
             <div><h4>Dormant Meter SMS Template</h4></div>
           </div>
           <div class="col-sm-8">
-            <ct-editable-switcher edit-mode$="[[_isStateEdit]]">
-              <paper-textarea class="input-element" label="Dormant Meter SMS Template" char-counter maxlength="160" required$="[[_isToggleActive]]" auto-validate error-message="Please enter message template" ></paper-textarea>
-            </ct-editable-switcher>
-            <small>Insert <code>[&shy;[meter_num]&shy;]</code> into template to display the affected meter number</small>
+            <ct-input-element input-type='textarea'
+                              value=''
+                              label=''
+                              required
+                              note="Insert <code>[&shy;[meter_num]&shy;]</code> into template to display the affected meter number"
+                              error-message='Please enter message template'
+                              char-counter maxlength="160"></ct-input-element>
+
           </div>
         </div>
       </form>
     </div>
 
-    <paper-dialog
-            id="disableNotificationsModal"
-            modal
-            on-iron-overlay-opened="_patchOverlay">
-      <h2>Disable Dormant Meter Notification</h2>
-      <p>Are you sure you want to disable dormant meter notifications?</p>
-      <div class="buttons">
-        <paper-button class="btn btn-link" on-tap="_cancelModal">Cancel</paper-button>
-        <paper-button class="btn btn-primary" on-tap="_disableNotification" autofocus raised>Yes</paper-button>
-      </div>
-    </paper-dialog>
+    <ct-delete-dialog></ct-delete-dialog>
 
   </template>
 
@@ -155,21 +148,6 @@ View the dormant meters template
 
       Polymer({
           is: 'ct-view-settings-dormant-meters',
-
-          properties: {
-              _isStateEdit : {
-                  type: Boolean,
-                  value: function() {
-                      return false;
-                  }
-              },
-
-              _isToggleActive : {
-                  type: Boolean,
-                  observer: '_toggleNotification'
-              }
-
-          },
 
           listeners : {
               'iron-form-presubmit': '_formHandler'
@@ -179,71 +157,6 @@ View the dormant meters template
               return (!status);
           },
 
-          _computeButtonText: function(isEdit){
-              return (isEdit) ? 'Save Template' : 'Edit Template';
-          },
-
-          _computeBtnStyle : function(isEdit){
-              return (isEdit) ? "btn-primary" : "btn-default";
-          },
-
-          _toggleStatus : function(){
-              this._isStateEdit = !this._isStateEdit;
-          },
-
-          _editBtnHandler : function(){
-              var form = this.$$('form');
-
-              if(this._isStateEdit){
-                  if(form.validate()){
-                      form.submit();
-                  }
-              } else {
-                  this._toggleStatus();
-              }
-          },
-
-          _formHandler : function(e){
-              var form = this.$$('form');
-              e.preventDefault();
-              this.fire('updateNotifications', form.serialize());
-              this._toggleStatus();
-          },
-
-          _computeToggleText : function(isActive) {
-              return (isActive) ? 'Enabled' : 'Disabled';
-          },
-
-          _disableNotification : function(e){
-              this.fire('disableNotification');
-              this.$.disableNotificationsModal.close();
-          },
-
-          _cancelModal : function(e){
-              this.set('_isToggleActive', true);
-              this.$.disableNotificationsModal.close();
-          },
-
-          _enableNotification : function(e){
-              this.fire('enableNotification');
-          },
-
-          _toggleNotification : function(newValue, oldValue){
-
-              if(newValue){
-                  this._enableNotification();
-              } else {
-                  if(oldValue !== undefined){
-                      this.$.disableNotificationsModal.open();
-                  }
-              }
-          },
-
-          _patchOverlay: function (e) {
-              if (e.target.withBackdrop) {
-                  e.target.parentNode.insertBefore(e.target.backdropElement, e.target);
-              }
-          },
       });
 
   </script>
