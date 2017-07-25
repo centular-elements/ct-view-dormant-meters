@@ -18,8 +18,8 @@
     "paper-icon-button": "PolymerElements/paper-icon-button#^1.1.4",
     "paper-styles": "PolymerElements/paper-styles#^1.2.0",
     "paper-material": "PolymerElements/paper-material#^1.0.6",
-    "ct-input-element": "git@github.com:centular-elements/ct-input-element.git",
-    "ct-setting-api": "git@github.com:centular-elements/ct-setting-api.git"
+    "ct-input-element": "centular-elements/ct-input-element",
+    "ct-setting-api": "centular-elements/ct-setting-api"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
